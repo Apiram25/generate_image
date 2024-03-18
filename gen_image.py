@@ -58,14 +58,15 @@ for move_distance in range(0, -1 * vp_height + height-1, 10):
             if (center[0] < 0) or (center[1] < 0) or (center[0] > width) or (center[1] > height):
                 nb_plants = nb_plants - 1
             else:
+                perspective_coef = center[1]/height
                 if current_row_plant_types[i] == 0:
-                    cv.circle(img, center, 12, 255, -1)
+                    cv.circle(img, center, int(20 * perspective_coef), 255, -1)
                 elif current_row_plant_types[i] == 1:
-                    cv.drawMarker(img,center,255,markerType = cv.MARKER_CROSS,markerSize = 35,thickness = 5)
+                    cv.drawMarker(img,center,255,markerType = cv.MARKER_CROSS,markerSize = int(50 * perspective_coef),thickness = 5)
                 elif current_row_plant_types[i] == 2:
-                    cv.drawMarker(img,center,255,markerType = cv.MARKER_TILTED_CROSS,markerSize = 35,thickness = 5)
+                    cv.drawMarker(img,center,255,markerType = cv.MARKER_TILTED_CROSS,markerSize = int(50 * perspective_coef),thickness = 5)
                 else:
-                    cv.drawMarker(img,center,255,markerType = cv.MARKER_STAR,markerSize = 35,thickness = 5)
+                    cv.drawMarker(img,center,255,markerType = cv.MARKER_STAR,markerSize = int(50 * perspective_coef),thickness = 5)
         nb_plants_per_row.append(nb_plants) 
     #print(nb_plants_per_row)
     cv.imshow("Crop rows", img)
