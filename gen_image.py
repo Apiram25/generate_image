@@ -5,10 +5,12 @@ np.random.seed(44)
 
 # Parameters
 height = 700
-width = 512
+width = 500
 vp_height = -500
-vanishing_point = (255, vp_height)
+vp_width = 250
+vanishing_point = (vp_width, vp_height)
 inter_row_distance = 80
+offset = 0
 
 nb_of_plants_rows = 7
 max_number_plants_per_row = 15
@@ -21,7 +23,7 @@ initial_plant_positions = []
 plant_types = []
 for i in range(nb_of_plants_rows):
     # Get position of lines crossing in the vanishing point
-    cv.line(img, (i * inter_row_distance, height), vanishing_point, 255, 1)
+    cv.line(img, (i * inter_row_distance + offset, height), vanishing_point, 255, 1)
     coordinates = np.where(img != 0)
     row_coordinates = np.array(list(zip(coordinates[1], coordinates[0])))
     plants_rows.append(row_coordinates)
@@ -43,7 +45,7 @@ weeds_rows = []
 initial_weeds_positions = []
 weeds_types = []
 for i in range(nb_of_weeds_rows):
-    cv.line(img, (i * inter_row_weeds_distance, height), vanishing_point, 255, 1)
+    cv.line(img, (i * inter_row_weeds_distance + offset, height), vanishing_point, 255, 1)
     weeds_coordinates = np.where(img != 0)
     weeds_row_coordinates = np.array(list(zip(weeds_coordinates[1], weeds_coordinates[0])))
     weeds_rows.append(weeds_row_coordinates)
@@ -65,30 +67,32 @@ for move_distance in range(0, -1 * vp_height + height-1, 10):
         break
     
     img = np.zeros((height, width), np.uint8)
+    
     # Draw lines of plants rows
     # for i in range(nb_of_plants_rows):
-    #     cv.line(img, (i * inter_row_distance, height), vanishing_point, 255, 1)   
+    #     cv.line(img, (i * inter_row_distance + offset, height), vanishing_point, 255, 1)   
         
     # Draw plants    
     nb_plants_per_row = []
-    current_plant_positions = []
-    visible_plant_positions = []
+    current_plants_positions = []
+    visible_plants_positions = []
     for row_idx in range(nb_of_plants_rows):
-        current_plant_positions = np.asarray(initial_plant_positions[row_idx] + move_distance)
-        current_row_plant_types = plant_types[row_idx][current_plant_positions < height]
-        visible_plant_positions = current_plant_positions[current_plant_positions < height]
-        plant_positions = plants_rows[row_idx][visible_plant_positions]
+        current_plants_positions = np.asarray(initial_plant_positions[row_idx] + move_distance)
+        last_point_of_row = plants_rows[row_idx][-1][1]
+        current_row_plants_types = plant_types[row_idx][(current_plants_positions >= 0) & (current_plants_positions <= last_point_of_row)]
+        visible_plants_positions = current_plants_positions[(current_plants_positions >= 0) & (current_plants_positions <= last_point_of_row)] 
+        plant_positions = plants_rows[row_idx][visible_plants_positions]
         nb_visible_plants = len(plant_positions)
         for i, center in enumerate(plant_positions):
             if (center[0] < 0) or (center[1] < 0) or (center[0] > width) or (center[1] > height):
                 nb_visible_plants = nb_visible_plants - 1
             else:
                 perspective_coef = center[1]/height
-                if current_row_plant_types[i] == 0:
+                if current_row_plants_types[i] == 0:
                     cv.circle(img, center, int(20 * perspective_coef), 255, -1)
-                elif current_row_plant_types[i] == 1:
+                elif current_row_plants_types[i] == 1:
                     cv.drawMarker(img,center,255,markerType = cv.MARKER_CROSS,markerSize = int(50 * perspective_coef),thickness = 5)
-                elif current_row_plant_types[i] == 2:
+                elif current_row_plants_types[i] == 2:
                     cv.drawMarker(img,center,255,markerType = cv.MARKER_TILTED_CROSS,markerSize = int(50 * perspective_coef),thickness = 5)
                 else:
                     cv.drawMarker(img,center,255,markerType = cv.MARKER_STAR,markerSize = int(50 * perspective_coef),thickness = 5)
@@ -101,9 +105,9 @@ for move_distance in range(0, -1 * vp_height + height-1, 10):
     visible_weeds_positions = []
     for row_idx in range(nb_of_weeds_rows):
         current_weeds_positions = np.asarray(initial_weeds_positions[row_idx] + move_distance)
-        row_last_point = weeds_rows[row_idx][-1][1]
-        current_row_weeds_types = weeds_types[row_idx][(current_weeds_positions >= 0) & (current_weeds_positions <= row_last_point)]
-        visible_weeds_positions = current_weeds_positions[(current_weeds_positions >= 0) & (current_weeds_positions <= row_last_point)] 
+        last_point_of_row = weeds_rows[row_idx][-1][1]
+        current_row_weeds_types = weeds_types[row_idx][(current_weeds_positions >= 0) & (current_weeds_positions <= last_point_of_row)]
+        visible_weeds_positions = current_weeds_positions[(current_weeds_positions >= 0) & (current_weeds_positions <= last_point_of_row)] 
         weeds_positions = weeds_rows[row_idx][visible_weeds_positions]
         nb_visible_weeds = len(weeds_positions)
         for i, center in enumerate(weeds_positions):
