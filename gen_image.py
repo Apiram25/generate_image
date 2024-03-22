@@ -3,7 +3,7 @@ import cv2 as cv
 
 np.random.seed(44)
 
-# Parameters
+# Field parameters
 height = 700
 width = 500
 vp_height = -500
@@ -12,6 +12,7 @@ vanishing_point = (vp_width, vp_height)
 inter_row_distance = 80
 offset = 0
 
+# Plants generation parameters
 nb_of_plants_rows = 7
 max_number_plants_per_row = 15
 nb_plant_types = 4
@@ -36,7 +37,7 @@ for i in range(nb_of_plants_rows):
     plant_markers = np.random.choice(nb_plant_types, nb_plants)
     plant_types.append(plant_markers)
     
-
+# Weeds generation parameters
 nb_of_weeds_rows = 56
 inter_row_weeds_distance = 10
 max_number_weeds_per_row = 2
@@ -52,7 +53,7 @@ for i in range(nb_of_weeds_rows):
     img = np.zeros((height, width), np.uint8)
     
     # Generate initial positions of the weeds
-    nb_weeds = np.random.randint(1, max_number_weeds_per_row)
+    nb_weeds = np.random.randint(0, max_number_weeds_per_row)
     random_selection = np.random.choice(np.arange(vp_height, height, 30), nb_weeds, replace=False)
     initial_weeds_positions.append(random_selection)
     weeds_markers = np.random.choice(nb_plant_types, nb_weeds)
