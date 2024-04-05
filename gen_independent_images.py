@@ -1,9 +1,10 @@
 import numpy as np
 import cv2 as cv
+import json
 
 np.random.seed(44)
 
-for image_idx in range(100):
+for image_idx in range(50):
     # Field parameters
     height = 700
     width = 500
@@ -130,6 +131,20 @@ for image_idx in range(100):
         
         # cv.imshow("Crop rows", img)
         # k = cv.waitKey(0)
-        cv.imwrite(f"data/sample_{image_idx}.jpg",img)
+
+        # save image
+        cv.imwrite(f"data/images/sample_{image_idx}.jpg",img)
+        # save label
+        label = {
+            "height":height,
+            "width":width,
+            "vp_height":vp_height,
+        }
+
+        json_data = json.dumps(label, indent=4)
+        f = open(f'data/labels/sample_{image_idx}.json', 'w')
+        f.write(json_data)
+        
+        print(f"Saved image {image_idx}")
         break
 
