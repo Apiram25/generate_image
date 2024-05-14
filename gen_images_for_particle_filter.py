@@ -35,7 +35,7 @@ class Visualizer:
 
     def draw(self, plants):
         # Empty image
-        self.img = np.zeros((world.height, world.width), np.uint8)
+        self.img = np.zeros((self.world.height, self.world.width), np.uint8)
 
         # Draw plants and particles
         self.draw_plants(plants)
@@ -62,8 +62,8 @@ class Plants:
         self.inter_row_distance = ir
         self.inter_plant_distance = ip
         self.offset = o  # between -(width/2) and +(width/2)
-        self.skew = s  # TODO
-        self.convergence = c  # TODO
+        #self.skew = s  # TODO
+        #self.convergence = c  # TODO
 
         # Field parameters
         self.vp_height = vp_height
@@ -100,10 +100,10 @@ class Plants:
             random_selection = np.random.choice(np.arange(self.vp_height, self.world.height, self.inter_plant_distance),
                                                 nb_plants, replace=False)
             # add of a little noise
-            for i in range(len(random_selection)):
-                selection = random_selection[i]
+            for j in range(len(random_selection)):
+                selection = random_selection[j]
                 # Gaussian centered around the original coordinates
-                random_selection[i] = np.random.normal(selection, 11,1)
+                random_selection[j] = np.random.normal(selection, 11,1)
 
             self.plant_positions.append(random_selection)
 
@@ -115,14 +115,6 @@ class Plants:
         # self.highest_plant = np.min(sum([list(sublist) for sublist in self.initial_plant_positions], []))
 
     def move(self, move_distance):
-        # Idea: move plants down across rows to create an image sequence
-
-        # Stop generating images when the last plant is below the bottom third of the image
-        # if (self.highest_plant + move_distance) > self.height/3 * 2:
-        # return
-
-        self.img = np.zeros((self.world.height, self.world.width), np.uint8)
-
         # Move every plants using the input move_distance value
         for row_idx in range(self.nb_rows):
             for i in range(len(self.plant_positions[row_idx])):
