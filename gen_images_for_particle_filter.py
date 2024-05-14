@@ -94,8 +94,8 @@ class Plants:
             self.plants_rows.append(row_coordinates)
 
             # Generate initial positions of the plants for a row
-            # number of plants in the row : between 60% and 100% of the maximum number of plants per row
-            nb_plants = np.random.randint(np.floor(0.60 * self.max_number_plants_per_row), self.max_number_plants_per_row)
+            # number of plants in the row : between 70% and 100% of the maximum number of plants per row
+            nb_plants = np.random.randint(np.floor(0.70 * self.max_number_plants_per_row), self.max_number_plants_per_row)
             # random positions for each plant
             random_selection = np.random.choice(np.arange(self.vp_height, self.world.height, self.inter_plant_distance),
                                                 nb_plants, replace=False)
@@ -103,7 +103,7 @@ class Plants:
             for i in range(len(random_selection)):
                 selection = random_selection[i]
                 # Gaussian centered around the original coordinates
-                random_selection[i] = np.random.normal(selection, 6,1)
+                random_selection[i] = np.random.normal(selection, 11,1)
 
             self.plant_positions.append(random_selection)
 
