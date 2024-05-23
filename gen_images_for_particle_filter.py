@@ -68,7 +68,7 @@ class Visualizer:
         self.draw_horizontal_neighbors(offset, position, ir)
 
     def draw_particular_plant(self, offset, position):
-        if not (self.is_valid_coordinates(offset, position)):
+        if not (self.are_coordinates_valid(offset, position)):
             print("Error: offset and/or position has an invalid value")
             return -1
         center = np.asarray([offset, position])
@@ -92,7 +92,7 @@ class Visualizer:
         # Drawing left neighbors
         leftOffset = offset - ir
 
-        while self.is_valid_coordinates(leftOffset, position):
+        while self.are_coordinates_valid(leftOffset, position):
             center = np.asarray([leftOffset, position])
 
             cv.drawMarker(self.img, center, color, markerType=cv.MARKER_DIAMOND,
@@ -103,7 +103,7 @@ class Visualizer:
         # Drawing right neighbors
         rightOffset = offset + ir
 
-        while self.is_valid_coordinates(rightOffset, position):
+        while self.are_coordinates_valid(rightOffset, position):
             center = np.asarray([rightOffset, position])
 
             cv.drawMarker(self.img, center, color, markerType=cv.MARKER_DIAMOND,
@@ -114,7 +114,7 @@ class Visualizer:
     def draw_top_particular_plant(self, offset, position, skew):
         return True
 
-    def is_valid_coordinates(self, x, y):
+    def are_coordinates_valid(self, x, y):
         """
         Returns a boolean indicating whether (x, y) is inside the image or not (valid position or not).
         """
